@@ -2,7 +2,7 @@
   "name": "venkat",
   "displayName": "venkat",
   "description": "Run code snippet and show result inline.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "MIT",
   "repository": "https://github.com/mneedham/venkat",
   "author": "ChatGPT 4",
