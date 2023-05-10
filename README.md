@@ -7,6 +7,8 @@ It runs a python file up to the current line and displays the result of that las
 
 It runs a python file up to the current line and displays the result of that last line in a comment below.
 
+![](images/venkat-demo.gif)
+
 ## Requirements
 
 Python should be installed.
