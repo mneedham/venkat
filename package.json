@@ -2,7 +2,7 @@
   "name": "venkat",
   "displayName": "venkat",
   "description": "Run code snippet and show result inline.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "repository": "https://github.com/mneedham/venkat",
   "author": "ChatGPT 4",
@@ -14,19 +14,14 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": ["onCommand:extension.executeAndShowResult"],
+  "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "venkat.helloWorld",
-        "title": "Hello World"
-      },
-{
-  "command": "extension.executeAndShowResult",
-  "title": "Execute and Show Result"
-}
-
+        "command": "venkat.run",
+        "title": "Venkat"
+      }
     ]
   },
   "scripts": {

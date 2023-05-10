@@ -5,7 +5,7 @@ import * as os from 'os';
 import * as path from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand('extension.executeAndShowResult', async () => {
+  let disposable = vscode.commands.registerCommand('venkat.run', async () => {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
