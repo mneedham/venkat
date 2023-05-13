@@ -72,7 +72,13 @@ function executeCode(code: string, languageId: string): Promise<string | null> {
           comment = '//'
           extension = 'js';
           break;
-      case 'ruby':
+        case 'typescript':
+          logCommand = (lastLine) => `console.log(${lastLine});`;
+          command = `ts-node`;
+          comment = '//'
+          extension = 'ts';
+          break;
+        case 'ruby':
         logCommand = (lastLine) => `puts(${lastLine});`;
         command = `ruby`;
         comment = '#'

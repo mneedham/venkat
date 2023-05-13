@@ -21,6 +21,10 @@ An interpreter for the languages used, should be installed.
 * javascript : node
 * ruby: ruby
 * java: jshell
+* kotlin: kotlin
+* typescript: ts-node
+* php: php
+
 
 ## Known Issues
 
@@ -28,17 +32,13 @@ Barely works, not much error handling.
 
 ## Release Notes
 
-### 0.0.8
-
-* added php and kotlin language support
-* Better handling of file extensions
-* show all errors
-
 ### 0.0.7
 
-* Language support for python, javascript, ruby, java
+* Language support for python, javascript, typescript, ruby, java, kotlin, php
 * better handling of result comments esp. for multiline
 * multiline results on new line
+* Better handling of file extensions
+* show all errors
 
 ### 0.0.1
 
