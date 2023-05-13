@@ -8,7 +8,7 @@ import * as assert from 'assert';
 import {Language, parseLanguage} from '../../language';
 
 
-suite('Extension Test Suite', () => {
+suite('Language Test Suite', () => {
 	// vscode.window.showInformationMessage('Start all tests.');
 
 	test('Python', () => {

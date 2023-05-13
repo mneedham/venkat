@@ -12,7 +12,7 @@ function splitAndRemoveEmptyLines(text: string): Array<string> {
     .filter((l) => l.trim() !== "");
 }
 
-async function prepareCode(
+export async function prepareCode(
   code: string,
   languageId: string
 ): Promise<[Language, string]> {
@@ -32,7 +32,7 @@ async function prepareCode(
     let lastLine: string = lines.pop() || "";
     const commentIdx = lastLine.lastIndexOf(language.comment);
     if (commentIdx !== -1) {
-      lastLine = lastLine.substring(0, commentIdx);
+      lastLine = lastLine.substring(0, commentIdx).trimEnd();
     }
 
     const wrappedLastLine = language.logCommand(lastLine);
