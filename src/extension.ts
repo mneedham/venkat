@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-import {parseLanguage, Language} from './language'
+import {parseLanguage, Language} from './language';
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand('venkat.run', async () => {
@@ -41,95 +41,47 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
+
+function splitAndRemoveEmptyLines(text:string) : Array<string> {
+  return text.trim().split('\n').filter(l => l.trim() !== '');
+}
+
 function executeCode(code: string, languageId: string): Promise<string | null> {
-  return new Promise(async (resolve, reject) => {
-    let command: string;
-    let logCommand: (lastLine: string) => string;
-    let tempDir: string;
-    let tempFile: string;
-    let comment: string;
-    let append: string|undefined = '';
-    let extension = languageId;
-    const lines = code.split('\n');
-    while (lines.length > 0 && lines[lines.length - 1].trim() === '') {
-      lines.pop();
-    }
-    if (lines.length == 0) {
+
+  return new Promise(async (resolve, _) => {
+    
+    const lines = splitAndRemoveEmptyLines(code);
+
+    if (lines.length === 0) {
       vscode.window.showErrorMessage(`No code selected`);
       return resolve(null);
     }
 
-    const lastLine: string = lines.pop() || '';
-
-    const language: Language | null = parseLanguage(languageId)
+    const language = parseLanguage(languageId);
 
     if(language === null) {
       vscode.window.showErrorMessage(`Language "${languageId}" is not supported.`);
       return resolve(null);
     }
 
-    logCommand = language.logCommand;
-    command = language.command;
-    comment = language.comment;
-    extension = language.extension;
-    append = language.append;
+    let lastLine: string = lines.pop() || '';
+    const commentIdx = lastLine.lastIndexOf(language.comment);
+    if (commentIdx !== -1) {
+        lastLine = lastLine.substring(0, commentIdx);
+    }
 
-    // switch (languageId) {
-    //   case 'python':
-    //     logCommand = (lastLine) => `print(${lastLine})`;
-    //     command = `python`;
-    //     comment = '#';
-    //     extension = 'py';
-    //     break;
-    //   case 'javascript':
-    //     logCommand = (lastLine) => `console.log(${lastLine});`;
-    //     command = `node`;
-    //     comment = '//'
-    //     extension = 'js';
-    //     break;
-    //   case 'typescript':
-    //     logCommand = (lastLine) => `console.log(${lastLine});`;
-    //     command = `ts-node`;
-    //     comment = '//'
-    //     extension = 'ts';
-    //     break;
-    //   case 'ruby':
-    //     logCommand = (lastLine) => `puts(${lastLine});`;
-    //     command = `ruby`;
-    //     comment = '#'
-    //     extension = 'rb';
+    const wrappedLastLine = language.logCommand(lastLine);
+    const wrappedCode = [...lines, wrappedLastLine].join('\n');
 
-    //     break;
-    //   case 'java':
-    //     logCommand = (lastLine) => `System.out.println(${lastLine});\n/exit\n`;
-    //     command = `jshell -s`;
-    //     comment = '//'
-    //     break;
-    //   case 'kotlin':
-    //     logCommand = (lastLine) => `println(${lastLine});`;
-    //     command = `kotlin`;
-    //     comment = '//'
-    //     extension = 'kts';
-    //     break;
-    //   case 'php':
-    //     logCommand = (lastLine) => `print(${lastLine});`;
-    //     append = '?>';
-    //     command = `php -f`;
-    //     comment = '//'
-    //     break;
-    //   default:
-    //     vscode.window.showErrorMessage(`Language "${languageId}" is not supported.`);
-    //     return resolve(null);
-    // }
-    const wrappedLastLine = logCommand(lastLine);
-    const wrappedCode = [...lines, wrappedLastLine, append].join('\n');
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vscode-ext-'));
-    tempFile = path.join(tempDir, `venkat.${extension}`);
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vscode-ext-'));
+    const tempFile = path.join(tempDir, `venkat.${language.extension}`);
+
     fs.writeFileSync(tempFile, wrappedCode);
-    command = command + ' ' + tempFile;
 
-    cp.exec(command, (error, stdout, stderr) => {
-      let result: string;
+    const commandLine = language.command + ' ' + tempFile;
+
+    cp.exec(commandLine, (error, stdout, stderr) => {
+      let result : string;
       if (error) {
         result = error.message;
       } else {
@@ -137,15 +89,9 @@ function executeCode(code: string, languageId: string): Promise<string | null> {
         fs.rmdirSync(tempDir, { recursive: true });
         result = stdout || stderr;
       }
-      const lines = result.trim().split('\n');
-      result = ((lines.length > 1) ? '\n' : ' ') + lines.filter(l => l.trim() !== '').map(l => comment + ' ' + l).join("\n");
+      const lines = splitAndRemoveEmptyLines(result);
+      result = ((lines.length > 1) ? '\n':' ') + lines.map(l => language.comment + ' '+ l).join("\n");
       resolve(result);
     });
   });
 }
-
-
-
-
-
-
