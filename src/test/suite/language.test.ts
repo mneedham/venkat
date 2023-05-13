@@ -4,15 +4,15 @@ import * as assert from 'assert';
 // as well as import your extension to test it
 // import * as vscode from 'vscode';
 
-import * as venkat from '../../extension';
-import {Language} from '../../language'
+// import * as venkat from '../../extension';
+import {Language, parseLanguage} from '../../language'
 
 
 suite('Extension Test Suite', () => {
 	// vscode.window.showInformationMessage('Start all tests.');
 
 	test('Python', () => {
-		const lang: Language|null= venkat.parseLanguage("python")
+		const lang: Language|null= parseLanguage("python")
 		assert.ok(lang)
 		assert.strictEqual("python", lang.command)
 		assert.strictEqual("py", lang.extension)
@@ -21,7 +21,7 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('JavaScript', () => {
-		const lang: Language | null = venkat.parseLanguage("javascript");
+		const lang: Language | null = parseLanguage("javascript");
 		assert.ok(lang);
 		assert.strictEqual("node", lang.command);
 		assert.strictEqual("js", lang.extension);
@@ -30,7 +30,7 @@ suite('Extension Test Suite', () => {
 	  });
 	  
 	  test('TypeScript', () => {
-		const lang: Language | null = venkat.parseLanguage("typescript");
+		const lang: Language | null = parseLanguage("typescript");
 		assert.ok(lang);
 		assert.strictEqual("ts-node", lang.command);
 		assert.strictEqual("ts", lang.extension);
@@ -39,7 +39,7 @@ suite('Extension Test Suite', () => {
 	  });
 	  
 	  test('Ruby', () => {
-		const lang: Language | null = venkat.parseLanguage("ruby");
+		const lang: Language | null = parseLanguage("ruby");
 		assert.ok(lang);
 		assert.strictEqual("ruby", lang.command);
 		assert.strictEqual("rb", lang.extension);
@@ -48,7 +48,7 @@ suite('Extension Test Suite', () => {
 	  });
 	  
 	  test('Java', () => {
-		const lang: Language | null = venkat.parseLanguage("java");
+		const lang: Language | null = parseLanguage("java");
 		assert.ok(lang);
 		assert.strictEqual("jshell -s", lang.command);
 		assert.strictEqual("java", lang.extension);
@@ -57,7 +57,7 @@ suite('Extension Test Suite', () => {
 	  });
 	  
 	  test('Kotlin', () => {
-		const lang: Language | null = venkat.parseLanguage("kotlin");
+		const lang: Language | null = parseLanguage("kotlin");
 		assert.ok(lang);
 		assert.strictEqual("kotlin", lang.command);
 		assert.strictEqual("kts", lang.extension);
@@ -66,7 +66,7 @@ suite('Extension Test Suite', () => {
 	  });
 	  
 	  test('PHP', () => {
-		const lang: Language | null = venkat.parseLanguage("php");
+		const lang: Language | null = parseLanguage("php");
 		assert.ok(lang);
 		assert.strictEqual("php -f", lang.command);
 		assert.strictEqual("php", lang.extension);
@@ -76,7 +76,7 @@ suite('Extension Test Suite', () => {
 	  });
 
 	  test('Unsupported', () => {
-		const lang: Language | null = venkat.parseLanguage("asciidoc");
+		const lang: Language | null = parseLanguage("asciidoc");
 		assert.strictEqual(lang, null);
 	  });
 	  
