@@ -46,6 +46,8 @@ function executeCode(code: string, languageId: string): Promise<string | null> {
     let tempDir: string;
     let tempFile: string;
     let comment: string;
+    let append = '';
+    let extension = languageId;
     const lines = code.split('\n');
     while (lines.length > 0 && lines[lines.length - 1].trim() === '') {
       lines.pop();
@@ -57,51 +59,65 @@ function executeCode(code: string, languageId: string): Promise<string | null> {
 
     const lastLine: string = lines.pop() || '';
 
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vscode-ext-'));
-    tempFile = path.join(tempDir, `venkat.${languageId}`);
     switch (languageId) {
       case 'python':
         logCommand = (lastLine) => `print(${lastLine})`;
-        command = `python ${tempFile}`;
-        comment = '#'
+        command = `python`;
+        comment = '#';
+        extension = 'py';
         break;
       case 'javascript':
           logCommand = (lastLine) => `console.log(${lastLine});`;
-          command = `node ${tempFile}`;
+          command = `node`;
           comment = '//'
+          extension = 'js';
           break;
       case 'ruby':
         logCommand = (lastLine) => `puts(${lastLine});`;
-        command = `ruby ${tempFile}`;
+        command = `ruby`;
         comment = '#'
+        extension = 'rb';
+
         break;
       case 'java':
         logCommand = (lastLine) => `System.out.println(${lastLine});\n/exit\n`;
-        command = `jshell -s ${tempFile}`;
+        command = `jshell -s`;
         comment = '//'
         break;
+      case 'kotlin':
+        logCommand = (lastLine) => `println(${lastLine});`;
+        command = `kotlin`;
+        comment = '//'
+        extension = 'kts';
+        break;
+      case 'php':
+        logCommand = (lastLine) => `print(${lastLine});`;
+        append = '?>';
+        command = `php -f`;
+        comment = '//'
+        break;  
       default:
         vscode.window.showErrorMessage(`Language "${languageId}" is not supported.`);
         return resolve(null);
     }
     const wrappedLastLine = logCommand(lastLine);
-    const wrappedCode = [...lines, wrappedLastLine].join('\n');
-
+    const wrappedCode = [...lines, wrappedLastLine, append].join('\n');
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vscode-ext-'));
+    tempFile = path.join(tempDir, `venkat.${extension}`);
     fs.writeFileSync(tempFile, wrappedCode);
+    command = command + ' ' + tempFile;
 
     cp.exec(command, (error, stdout, stderr) => {
-      fs.rmSync(tempFile, { force: true });
-      fs.rmdirSync(tempDir, { recursive: true });
       let result : string;
       if (error) {
-        const errorLines = error.message.split('\n');
-        const lastErrorLine = errorLines.reverse().find((line:String) => line.trim() !== '');
-        result = lastErrorLine || error.message;
+        result = error.message;
       } else {
-        result = stdout || stderr;
+          fs.rmSync(tempFile, { force: true });
+          fs.rmdirSync(tempDir, { recursive: true });
+          result = stdout || stderr;
       }
       const lines = result.trim().split('\n');
-      result = ((lines.length > 1) ? '\n':' ') + lines.map(l => comment + ' '+ l).join("\n");
+      result = ((lines.length > 1) ? '\n':' ') + lines.filter(l => l.trim() !== '').map(l => comment + ' '+ l).join("\n");
       resolve(result);
     });
   });

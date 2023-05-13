@@ -28,12 +28,18 @@ Barely works, not much error handling.
 
 ## Release Notes
 
-### 0.0.1
+### 0.0.8
 
-Initial release of venkat, only works with python for now.
+* added php and kotlin language support
+* Better handling of file extensions
+* show all errors
 
 ### 0.0.7
 
 * Language support for python, javascript, ruby, java
 * better handling of result comments esp. for multiline
 * multiline results on new line
+
+### 0.0.1
+
+Initial release of venkat, only works with python for now.
