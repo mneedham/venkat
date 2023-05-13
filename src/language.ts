@@ -10,14 +10,20 @@ export function parseLanguage(languageId: string) : Language | null {
     switch (languageId) {
       case 'python':
         return  {
-          logCommand: (lastLine: string) => `print(${lastLine})`,
+          logCommand: (lastLine: string) => {
+            const printPattern = /^\s*print\(.+\)/;
+            return printPattern.test(lastLine) ? lastLine : `print(${lastLine})`;
+          },
           command: 'python',
           extension: 'py',
           comment: '#',
         };
       case 'javascript':
         return  {
-          logCommand: (lastLine: string) => `console.log(${lastLine});`,
+          logCommand: (lastLine: string) => {
+            const consoleLogPattern = /^\s*console\.log\(.+\)/;
+            return consoleLogPattern.test(lastLine) ? lastLine : `console.log(${lastLine});`;
+          },
           command: 'node',
           extension: 'js',
           comment: '//',
