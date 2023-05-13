@@ -1,9 +1,33 @@
 # Change Log
 
-All notable changes to the "venkat" extension will be documented in this file.
+## Known Issues
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+Barely works, not much error handling.
 
-## [Unreleased]
 
-- Initial release
+## [0.0.8] - 2023-05-13 
+
+### Added
+
+* handle comment ending last line
+
+### Fixed
+
+* code cleanup
+
+## [0.0.7] - 2023-05-13 
+
+### Added 
+
+* Language support for python, javascript, typescript, ruby, java, kotlin, php
+* multiline results on new line
+
+### Fixed
+
+* better handling of result comments esp. for multiline
+* Better handling of file extensions
+* show all errors
+
+### [0.0.1] - 2023-05-10
+
+Initial release of venkat, only works with python for now.
