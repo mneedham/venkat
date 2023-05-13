@@ -28,10 +28,10 @@ export function activate(context: vscode.ExtensionContext) {
       const position = document.lineAt(editor.selection.active.line).range.end;
 
       editor.edit((editBuilder) => {
-        editBuilder.insert(position, ' # ' + result);
+        editBuilder.insert(position, result);
       });
 
-      const newSelection = new vscode.Selection(position, position.translate(0, (' # ' + result).length));
+      const newSelection = new vscode.Selection(position, position.translate(0, (result).length));
       editor.selection = newSelection;
     }
   });
@@ -42,42 +42,67 @@ export function activate(context: vscode.ExtensionContext) {
 function executeCode(code: string, languageId: string): Promise<string | null> {
   return new Promise(async (resolve, reject) => {
     let command: string;
+    let logCommand: (lastLine:string) => string;
     let tempDir: string;
     let tempFile: string;
+    let comment: string;
+    const lines = code.split('\n');
+    while (lines.length > 0 && lines[lines.length - 1].trim() === '') {
+      lines.pop();
+    }
+    if (lines.length == 0) {
+      vscode.window.showErrorMessage(`No code selected`);
+      return resolve(null);
+    }
+
+    const lastLine: string = lines.pop() || '';
+
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vscode-ext-'));
+    tempFile = path.join(tempDir, `venkat.${languageId}`);
     switch (languageId) {
       case 'python':
-        const lines = code.split('\n');
-        while (lines.length > 0 && lines[lines.length - 1].trim() === '') {
-          lines.pop();
-        }
-        const lastLine = lines.pop();
-        const wrappedLastLine = `print(${lastLine})`;
-        const wrappedCode = [...lines, wrappedLastLine].join('\n');
-
-        tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vscode-ext-'));
-        tempFile = path.join(tempDir, 'temp.py');
-        console.log(tempFile)
-        fs.writeFileSync(tempFile, wrappedCode);
+        logCommand = (lastLine) => `print(${lastLine})`;
         command = `python ${tempFile}`;
+        comment = '#'
         break;
-      // Add more languages here
+      case 'javascript':
+          logCommand = (lastLine) => `console.log(${lastLine});`;
+          command = `node ${tempFile}`;
+          comment = '//'
+          break;
+      case 'ruby':
+        logCommand = (lastLine) => `puts(${lastLine});`;
+        command = `ruby ${tempFile}`;
+        comment = '#'
+        break;
+      case 'java':
+        logCommand = (lastLine) => `System.out.println(${lastLine});\n/exit\n`;
+        command = `jshell -s ${tempFile}`;
+        comment = '//'
+        break;
       default:
         vscode.window.showErrorMessage(`Language "${languageId}" is not supported.`);
         return resolve(null);
     }
+    const wrappedLastLine = logCommand(lastLine);
+    const wrappedCode = [...lines, wrappedLastLine].join('\n');
+
+    fs.writeFileSync(tempFile, wrappedCode);
 
     cp.exec(command, (error, stdout, stderr) => {
       fs.rmSync(tempFile, { force: true });
       fs.rmdirSync(tempDir, { recursive: true });
-
+      let result : string;
       if (error) {
         const errorLines = error.message.split('\n');
-        const lastErrorLine = errorLines.reverse().find(line => line.trim() !== '');
-        resolve(lastErrorLine || error.message);
+        const lastErrorLine = errorLines.reverse().find((line:String) => line.trim() !== '');
+        result = lastErrorLine || error.message;
       } else {
-        const result = (stdout || stderr).trim();
-        resolve(result);
+        result = stdout || stderr;
       }
+      const lines = result.trim().split('\n');
+      result = ((lines.length > 1) ? '\n':' ') + lines.map(l => comment + ' '+ l).join("\n");
+      resolve(result);
     });
   });
 }
