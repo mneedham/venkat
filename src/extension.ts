@@ -1,11 +1,5 @@
 import * as vscode from 'vscode';
-import * as cp from 'child_process';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
-
-import {parseLanguage, Language} from './language';
-
+import { executeCode } from './execution';
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand('venkat.run', async () => {
     const editor = vscode.window.activeTextEditor;
@@ -24,17 +18,22 @@ export function activate(context: vscode.ExtensionContext) {
 
 
     const languageId = document.languageId;
-    const result = await executeCode(code, languageId);
+    try {
+      const result = await executeCode(code, languageId);
 
-    if (result) {
-      const position = document.lineAt(editor.selection.active.line).range.end;
+      if (result) {
+        const position = document.lineAt(editor.selection.active.line).range.end;
 
-      editor.edit((editBuilder) => {
-        editBuilder.insert(position, result);
-      });
+        editor.edit((editBuilder) => {
+          editBuilder.insert(position, result);
+        });
 
-      const newSelection = new vscode.Selection(position, position.translate(0, (result).length));
-      editor.selection = newSelection;
+        const newSelection = new vscode.Selection(position, position.translate(0, (result).length));
+        editor.selection = newSelection;
+      }
+    } catch (err) {
+        const message : string = (err instanceof Error) ? err.message : new String(err).toString();
+        vscode.window.showErrorMessage(message);
     }
   });
 
@@ -42,56 +41,3 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 
-function splitAndRemoveEmptyLines(text:string) : Array<string> {
-  return text.trim().split('\n').filter(l => l.trim() !== '');
-}
-
-function executeCode(code: string, languageId: string): Promise<string | null> {
-
-  return new Promise(async (resolve, _) => {
-    
-    const lines = splitAndRemoveEmptyLines(code);
-
-    if (lines.length === 0) {
-      vscode.window.showErrorMessage(`No code selected`);
-      return resolve(null);
-    }
-
-    const language = parseLanguage(languageId);
-
-    if(language === null) {
-      vscode.window.showErrorMessage(`Language "${languageId}" is not supported.`);
-      return resolve(null);
-    }
-
-    let lastLine: string = lines.pop() || '';
-    const commentIdx = lastLine.lastIndexOf(language.comment);
-    if (commentIdx !== -1) {
-        lastLine = lastLine.substring(0, commentIdx);
-    }
-
-    const wrappedLastLine = language.logCommand(lastLine);
-    const wrappedCode = [...lines, wrappedLastLine].join('\n');
-
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vscode-ext-'));
-    const tempFile = path.join(tempDir, `venkat.${language.extension}`);
-
-    fs.writeFileSync(tempFile, wrappedCode);
-
-    const commandLine = language.command + ' ' + tempFile;
-
-    cp.exec(commandLine, (error, stdout, stderr) => {
-      let result : string;
-      if (error) {
-        result = error.message;
-      } else {
-        fs.rmSync(tempFile, { force: true });
-        fs.rmdirSync(tempDir, { recursive: true });
-        result = stdout || stderr;
-      }
-      const lines = splitAndRemoveEmptyLines(result);
-      result = ((lines.length > 1) ? '\n':' ') + lines.map(l => language.comment + ' '+ l).join("\n");
-      resolve(result);
-    });
-  });
-}
