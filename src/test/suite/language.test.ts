@@ -5,19 +5,19 @@ import * as assert from 'assert';
 // import * as vscode from 'vscode';
 
 // import * as venkat from '../../extension';
-import {Language, parseLanguage} from '../../language'
+import {Language, parseLanguage} from '../../language';
 
 
 suite('Extension Test Suite', () => {
 	// vscode.window.showInformationMessage('Start all tests.');
 
 	test('Python', () => {
-		const lang: Language|null= parseLanguage("python")
-		assert.ok(lang)
-		assert.strictEqual("python", lang.command)
-		assert.strictEqual("py", lang.extension)
-		assert.strictEqual("#", lang.comment)
-		assert.strictEqual("print(1+2)", lang.logCommand("1+2"))
+		const lang: Language|null= parseLanguage("python");
+		assert.ok(lang);
+		assert.strictEqual("python", lang.command);
+		assert.strictEqual("py", lang.extension);
+		assert.strictEqual("#", lang.comment);
+		assert.strictEqual("print(1+2)", lang.logCommand("1+2"));
 	});
 
 	test('JavaScript', () => {

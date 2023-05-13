@@ -3,7 +3,7 @@ export type Language = {
     command: string;
     extension: string;
     comment: string;
-    append?: string
+    append?: string;
   };
 
 export function parseLanguage(languageId: string) : Language | null {
@@ -59,7 +59,7 @@ export function parseLanguage(languageId: string) : Language | null {
           comment: '//',
         };
       default:
-        return null
+        return null;
     }
   
   }

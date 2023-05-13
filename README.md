@@ -32,6 +32,11 @@ Barely works, not much error handling.
 
 ## Release Notes
 
+### 0.0.8
+
+* handle comment ending last line
+* code cleanup
+
 ### 0.0.7
 
 * Language support for python, javascript, typescript, ruby, java, kotlin, php
