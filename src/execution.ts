@@ -43,7 +43,8 @@ export async function prepareCode(
 
 async function doExecuteCode(
   code: string,
-  language: Language
+  language: Language,
+  resultAsComment: boolean
 ): Promise<string> {
   return new Promise(async (resolve, reject) => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "vscode-ext-"));
@@ -61,10 +62,12 @@ async function doExecuteCode(
         fs.rmSync(tempFile, { force: true });
         fs.rmdirSync(tempDir, { recursive: true });
       }
-      const lines = splitAndRemoveEmptyLines(result);
-      result =
-        (lines.length > 1 ? "\n" : " ") +
-        lines.map((l) => language.comment + " " + l).join("\n");
+      if (resultAsComment) {
+        const lines = splitAndRemoveEmptyLines(result);
+        result =
+          (lines.length > 1 ? "\n" : " ") +
+          lines.map((l) => language.comment + " " + l).join("\n");
+      }
       resolve(result);
     });
   });
@@ -72,8 +75,9 @@ async function doExecuteCode(
 
 export async function executeCode(
   code: string,
-  languageId: string
+  languageId: string,
+  resultAsComment: boolean
 ): Promise<string> {
   const [language, preppedCode] = await prepareCode(code, languageId);
-  return await doExecuteCode(preppedCode, language);
+  return await doExecuteCode(preppedCode, language, resultAsComment);
 }

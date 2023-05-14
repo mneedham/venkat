@@ -11,6 +11,7 @@ Barely works, not much error handling.
 
 * support to execute selections
 * handle comment ending last line
+* show results as comment or info message (configurable via setting "resultAsComment")
 
 ### Fixed
 

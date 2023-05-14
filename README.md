@@ -2,7 +2,7 @@
 
 This is the README for the VS Code extension "venkat". 
 
-It runs the example file up to the current line (or the selection) and displays the result of that last line in a comment after or for multi-line results below.
+It runs the example file up to the current line (or the selection) and displays the result of that last line in a comment after or for multi-line results below (or as info message).
 
 It is inspired by Venkat Subramaniam's use of Textmate tooltips for [code execution results](http://blog.agiledeveloper.com/2014/10/running-in-textmate.html) which is great for presentations.
 
@@ -12,6 +12,7 @@ It is inspired by Venkat Subramaniam's use of Textmate tooltips for [code execut
 * Language support for python, javascript, ruby, java
 * supports multiline outputs
 * selects result, so can be deleted or copied with a single keystroke
+* show result as comment or as info message
 
 ![](images/venkat-demo.gif)
 

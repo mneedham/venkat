@@ -22,7 +22,17 @@
         "command": "venkat.run",
         "title": "Venkat"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "venkat",
+      "properties": {
+        "venkat.resultAsComment": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the execution result as comment after the code, otherwise as info message"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
