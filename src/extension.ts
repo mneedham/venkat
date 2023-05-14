@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
     const languageId = document.languageId;
     try {
       const config = vscode.workspace.getConfiguration('venkat');
-      const resultAsComment = config.get<boolean>('resultAsComment')===true;
+      const resultAsComment = config.get<boolean>('resultAsComment') ?? true;
 
       const result = await executeCode(code, languageId, resultAsComment);
 
