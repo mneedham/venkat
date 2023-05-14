@@ -30,6 +30,42 @@
           "type": "boolean",
           "default": true,
           "description": "Show the execution result as comment after the code, otherwise as info message"
+        },
+        "venkat.languages": {
+          "type": "object",
+          "patternProperties": {
+            "^\\w+$": {
+              "type": "object",
+              "properties": {
+                "executable": {
+                  "type": "string",
+                  "default": "python",
+                  "description": "Executable with command line options to run the file (appended)"
+                },
+                "output": {
+                  "type": "string",
+                  "default": "print(${expression})",
+                  "description": "Expression to print out the value of an expression, like print(), console.log, etc. ${expression} is the placeholder."
+                },
+                "comment": {
+                  "type": "string",
+                  "default": "#",
+                  "description": "Line comment prefix characters for the language"
+                },
+                "extension": {
+                  "type": "string",
+                  "default": "py",
+                  "description": "File extension for the language"
+                },
+                "exit": {
+                  "type": "string",
+                  "default": "",
+                  "description": "Additional lines at end of script file to end execution, like /exit or ?>"
+                }
+              }
+            }
+          },
+          "description": "Additional language configurations or overrides"
         }
       }
     }

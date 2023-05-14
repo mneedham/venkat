@@ -5,13 +5,14 @@
 Barely works, not much error handling.
 
 
-## [0.0.8] - 2023-05-14
+## [0.0.8] - 2023-05-15
 
 ### Added
 
 * support to execute selections
 * handle comment ending last line
 * show results as comment or info message (configurable via setting "resultAsComment")
+* additional languages configurable or overridable in `venkat.languages`, see readme
 
 ### Fixed
 

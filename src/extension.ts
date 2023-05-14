@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { executeCode } from './execution';
+import { loadLanguages } from './language';
 
 function getCode(editor: vscode.TextEditor) : string {
   const document = editor.document;
@@ -20,13 +21,14 @@ export function activate(context: vscode.ExtensionContext) {
     if (!editor) {
       return;
     }    
-    const code = getCode(editor)
+    const code = getCode(editor);
 
     const document = editor.document;
     const languageId = document.languageId;
     try {
       const config = vscode.workspace.getConfiguration('venkat');
       const resultAsComment = config.get<boolean>('resultAsComment') ?? true;
+      loadLanguages(config.get<{[key:string]:{[key:string]:string}}>('languages'));
 
       const result = await executeCode(code, languageId, resultAsComment);
 

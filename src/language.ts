@@ -1,68 +1,93 @@
+import exp = require("constants");
+
 export type Language = {
-    logCommand: (lastLine: string) => string;
-    command: string;
+    output: string;
+    executable: string;
     extension: string;
     comment: string;
-    append?: string;
+    exit: string | undefined;
   };
 
+let languages : {[key:string] : Language} = {};
+
+export function loadLanguages(config: {[key:string] : {[key:string]:string}} | undefined) {
+  if (config === undefined) {return;}
+  for (let lang in config) {
+      const { extension, comment, output, executable, exit } = config[lang];
+      languages[lang] = { extension, comment,executable, output, exit } as Language
+  }
+  console.log(config);
+  console.log(languages);
+}
+export function printExpression(output:string, expression:string) : string {
+  const printPrefix = output.replace(/\$\{expression\}.*/,'');
+  if (expression.indexOf(printPrefix) === -1) {
+     return output.replace('${expression}',expression);
+  }
+  return expression;
+}
 export function parseLanguage(languageId: string) : Language | null {
+    const res = languages[languageId];
+    if (res !== undefined) {
+      return res;
+    }
     switch (languageId) {
       case 'python':
         return  {
-          logCommand: (lastLine: string) => {
-            const printPattern = /^\s*print\(.+\)/;
-            return printPattern.test(lastLine) ? lastLine : `print(${lastLine})`;
-          },
-          command: 'python',
+          output: 'print(${expression})',
+          executable: 'python',
           extension: 'py',
           comment: '#',
+          exit: undefined
         };
       case 'javascript':
         return  {
-          logCommand: (lastLine: string) => {
-            const consoleLogPattern = /^\s*console\.log\(.+\)/;
-            return consoleLogPattern.test(lastLine) ? lastLine : `console.log(${lastLine});`;
-          },
-          command: 'node',
+          output: 'console.log(${expression});',
+          executable: 'node',
           extension: 'js',
           comment: '//',
+          exit: undefined
+
         };
       case 'typescript':
         return  {
-          logCommand: (lastLine: string) => `console.log(${lastLine});`,
-          command: 'ts-node',
+          output: 'console.log(${expression});',
+          executable: 'ts-node',
           extension: 'ts',
           comment: '//',
+          exit: undefined
         };
       case 'ruby':
         return  {
-          logCommand: (lastLine: string) => `puts(${lastLine});`,
-          command: 'ruby',
+          output: 'puts(${expression});',
+          executable: 'ruby',
           extension: 'rb',
           comment: '#',
+          exit: undefined
         };
       case 'java':
         return  {
-          logCommand: (lastLine: string) => `System.out.println(${lastLine});\n/exit\n`,
-          command: 'jshell -s',
+          output: 'System.out.println(${expression});',
+          executable: 'jshell -s',
           extension: 'java',
           comment: '//',
+          exit: '/exit'
         };
       case 'kotlin':
         return  {
-          logCommand: (lastLine: string) => `println(${lastLine});`,
-          command: 'kotlin',
+          output: 'println(${expression});',
+          executable: 'kotlin',
           extension: 'kts',
           comment: '//',
+          exit: undefined
         };
       case 'php':
         return  {
-          logCommand: (lastLine: string) => `print(${lastLine});`,
-          command: 'php -f',
-          append: "?>",
+          output: 'print(${expression});',
+          executable: 'php -f',
           extension: 'php',
           comment: '//',
+          exit: '?>'
         };
       default:
         return null;
