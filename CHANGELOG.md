@@ -5,15 +5,17 @@
 Barely works, not much error handling.
 
 
-## [0.0.8] - 2023-05-13 
+## [0.0.8] - 2023-05-14
 
 ### Added
 
+* support to execute selections
 * handle comment ending last line
 
 ### Fixed
 
 * code cleanup
+* insert at end of last line of selection (not where the cursor is)
 
 ## [0.0.7] - 2023-05-13 
 
