@@ -1,29 +1,31 @@
 == Venkat - An inline code snippet execution extension for VS Code (Made in GPT-4)
 
-You might have seen https://www.youtube.com/results?search_query=venkat+subramaniam[presentations^] by the legendary https://twitter.com/venkat_s[Venkat Subramaniam^] who is able to execute arbitrary code snippets and show the results as a tooltip directly in the editor.
+https://twitter.com/venkat_s[Venkat Subramaniam^] is a legendary speaker on the tech conference circuit whose https://www.youtube.com/results?search_query=venkat+subramaniam[presentations^] are famous for executing arbitrary code snippets and showing the results as a tooltip directly in the editor.
 This makes it really great for videos or talks as you don't need a second output terminal to run your code and you can just continue explaining what you're doing.
-Also the results go away after so you don't need to worry about that.
+The results go away afterwards so you don't need to worry about that.
 
 image::https://github.com/mneedham/venkat/raw/main/images/venkat-textmate.png[]
 
-He even published a https://www.agilelearner.com/presentation/5[dedicated free course^] from 2013, on how to achieve that with TextMate.
+He even published a https://www.agilelearner.com/presentation/5[dedicated free course^] back in 2013 explaining how he does it using the TextMate editor.
 
-In his https://youtube.com/@learndatawithmark[LearnDataWithMark videos^] Mark wanted to use a similar effect, so we were unsuccessfully looking for a VS Code extension that does it.
+In his https://youtube.com/@learndatawithmark[LearnDataWithMark videos^], Mark wanted to use a similar effect, but couldn't find a VS Code extension that did the trick.
 
-So what else could we do at 10pm than *fire up ChatGPT4* to help us build a VS Code extension (and then in TypeScript), something we've never done before.
-Simon Willison talks about this, where he explains that with GPT4 he takes on ambitious projects more quickly as they usually yield results in a few hours instead of a few days.
+So what else could we do at 10pm than *fire up ChatGPT4* to help us build one ourselves. 
+Keep in mind that we've never built a VS Code extension before, nore are we that good at Typescript.
+We were following in the footsteps of Simon Willisons, https://simonwillison.net/2023/Mar/27/ai-enhanced-development/[who pointed out^] that with the assistance of GPT4, he's now able to take on and complete ambitious projects in a few hours instead of a few days.
 
-It did a really good job, guiding us through the initial setup and putting together a minimal example for executing selected python code.
-Initially just passing the code directly to the interpreter and capturing the rsult.
+ChatGPT did a really good job, guiding us through the initial setup and putting together a minimal example for executing Python python code.
+The first version passed the code directly to the interpreter and captured the result.
 
-Then we evolved it to run the whole file up to the current point, which made it necessary to write out the content to a file and execute that.
-But this then opened up the opportunity to support different languages and not have to fiddle with escaping symbols to avoid shell expansion.
+We evolved it to run the whole file up to the end of the current line, which made it necessary to write out the content to a file and execute that file.
+This design choice fortuitously opened up the opportunity to support different languages and not have to fiddle around with escaping symbols to avoid shell expansion.
 
-So two hours later we had a working prototype and were happy.
+Within two hourswe had a working prototype and were happy.
 
-So GPT could help us with publishing the extension, which it did a great job of, much better job than Microsoft did with the registration and publication process.
+GPT also provided us with instructions to package and publish the extension.
+Somewhat surprisingly, it also did a better job of explaining the registration and publication process than the official documentation.
 
-The most tricky part was selecting an icon, but we think we did a great job at a that.
+The most tricky part was selecting an icon, but we think we came up with a good one in the end!
 
 image::https://github.com/mneedham/venkat/raw/main/images/venkat-marketplace.png[link=https://marketplace.visualstudio.com/items?itemName=MarkNeedham.venkat,alt="Emoji with mustache and glasses, Install Venkat from the VS Code marketplace",target="_blank"]
 
