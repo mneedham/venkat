@@ -9,7 +9,7 @@ It is inspired by Venkat Subramaniam's use of Textmate tooltips for [code execut
 ## Features
 
 * execute selection or code up to current line
-* Language support for python, javascript, ruby, java
+* Language support for python, javascript, typescript, ruby, java, kotlin
 * supports multiline outputs
 * selects result, so can be deleted or copied with a single keystroke
 * show result as comment or as info message

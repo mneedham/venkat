@@ -1,0 +1,45 @@
+== Venkat - An inline code snippet execution extension for VS Code (Made in GPT-4)
+
+You might have seen https://www.youtube.com/results?search_query=venkat+subramaniam[presentations^] by the legendary https://twitter.com/venkat_s[Venkat Subramaniam^] who is able to execute arbitrary code snippets and show the results as a tooltip directly in the editor.
+This makes it really great for videos or talks as you don't need a second output terminal to run your code and you can just continue explaining what you're doing.
+Also the results go away after so you don't need to worry about that.
+
+image::https://github.com/mneedham/venkat/raw/main/images/venkat-textmate.png[]
+
+He even published a https://www.agilelearner.com/presentation/5[dedicated free course^] from 2013, on how to achieve that with TextMate.
+
+In his https://youtube.com/@learndatawithmark[LearnDataWithMark videos^] Mark wanted to use a similar effect, so we were unsuccessfully looking for a VS Code extension that does it.
+
+So what else could we do at 10pm than *fire up ChatGPT4* to help us build a VS Code extension (and then in TypeScript), something we've never done before.
+Simon Willison talks about this, where he explains that with GPT4 he takes on ambitious projects more quickly as they usually yield results in a few hours instead of a few days.
+
+It did a really good job, guiding us through the initial setup and putting together a minimal example for executing selected python code.
+Initially just passing the code directly to the interpreter and capturing the rsult.
+
+Then we evolved it to run the whole file up to the current point, which made it necessary to write out the content to a file and execute that.
+But this then opened up the opportunity to support different languages and not have to fiddle with escaping symbols to avoid shell expansion.
+
+So two hours later we had a working prototype and were happy.
+
+So GPT could help us with publishing the extension, which it did a great job of, much better job than Microsoft did with the registration and publication process.
+
+The most tricky part was selecting an icon, but we think we did a great job at a that.
+
+image::https://github.com/mneedham/venkat/raw/main/images/venkat-marketplace.png[link=https://marketplace.visualstudio.com/items?itemName=MarkNeedham.venkat,alt="Emoji with mustache and glasses, Install Venkat from the VS Code marketplace",target="_blank"]
+
+Now you can install https://marketplace.visualstudio.com/items?itemName=MarkNeedham.venkat[Venkat from the VS Code marketplace^]. 
+
+TODO proper example video
+image::https://github.com/mneedham/venkat/raw/main/images/venkat-demo.gif[]
+
+This was fun, so we continued to add a few more features - of course GPT-4 helped us with all the steps, because what do we know :)
+
+* execute selection or code up to current line
+* Language support for python, javascript, typescript, php, ruby, java, kotlin
+* supports multiline outputs
+* insert result as comment or show as info message (configurable)
+* selects inserted result, so can be deleted or copied with a single keystroke
+* configurable extra languages
+
+We'd love for you all to try Venkat out, https://github.com/mneedham/venkat/issues[give us feedback^] or https://github.com/mneedham/venkat[contribute to the project^] (e.g. by adding extra languages or features)
+
