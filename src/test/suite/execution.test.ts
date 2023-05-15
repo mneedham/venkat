@@ -5,7 +5,7 @@ suite('Execution Test Suite', () => {
 	test('prepareCode function with valid Python code', async () => {
 		try {
 			const [language, wrappedCode] = await prepareCode("'Hello World'", "python");
-			assert.strictEqual(language.command, 'python');
+			assert.strictEqual(language.executable, 'python');
 			assert.strictEqual(wrappedCode, "print('Hello World')");
 		} catch (error) {
 			if (error instanceof Error) {
@@ -19,7 +19,7 @@ suite('Execution Test Suite', () => {
 	test('prepareCode function with valid Python code that prints its own result', async () => {
 		try {
 			const [language, wrappedCode] = await prepareCode("print('Hello World')", "python");
-			assert.strictEqual(language.command, 'python');
+			assert.strictEqual(language.executable, 'python');
 			assert.strictEqual(wrappedCode, "print('Hello World')");
 		} catch (error) {
 			if (error instanceof Error) {
@@ -33,7 +33,7 @@ suite('Execution Test Suite', () => {
 	test('prepareCode function with valid Javascript code that prints its own result', async () => {
 		try {
 			const [language, wrappedCode] = await prepareCode("console.log(2)", "javascript");
-			assert.strictEqual(language.command, 'node');
+			assert.strictEqual(language.executable, 'node');
 			assert.strictEqual(wrappedCode, "console.log(2)");
 		} catch (error) {
 			if (error instanceof Error) {
@@ -48,7 +48,7 @@ suite('Execution Test Suite', () => {
 	test('prepareCode function with commented Python code', async () => {
 		try {
 			const [language, wrappedCode] = await prepareCode("'Hello' # print('World')", "python");
-			assert.strictEqual(language.command, 'python');
+			assert.strictEqual(language.executable, 'python');
 			assert.strictEqual(wrappedCode, "print('Hello')");
 		} catch (error) {
 			if (error instanceof Error) {

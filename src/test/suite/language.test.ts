@@ -5,7 +5,7 @@ import * as assert from 'assert';
 // import * as vscode from 'vscode';
 
 // import * as venkat from '../../extension';
-import {Language, parseLanguage} from '../../language';
+import {Language, parseLanguage, printExpression} from '../../language';
 
 
 suite('Language Test Suite', () => {
@@ -14,65 +14,75 @@ suite('Language Test Suite', () => {
 	test('Python', () => {
 		const lang: Language|null= parseLanguage("python");
 		assert.ok(lang);
-		assert.strictEqual("python", lang.command);
+		assert.strictEqual("python", lang.executable);
 		assert.strictEqual("py", lang.extension);
 		assert.strictEqual("#", lang.comment);
-		assert.strictEqual("print(1+2)", lang.logCommand("1+2"));
+		assert.strictEqual("print(${expression})", lang.output);
+		assert.strictEqual("print(1+2)", printExpression(lang.output,printExpression(lang.output,"1+2")));
 	});
 
 	test('JavaScript', () => {
 		const lang: Language | null = parseLanguage("javascript");
 		assert.ok(lang);
-		assert.strictEqual("node", lang.command);
+		assert.strictEqual("node", lang.executable);
 		assert.strictEqual("js", lang.extension);
 		assert.strictEqual("//", lang.comment);
-		assert.strictEqual('console.log(1+2);', lang.logCommand("1+2"));
+		assert.strictEqual('console.log(${expression});', lang.output);
+		assert.strictEqual('console.log(1+2);', printExpression(lang.output,"1+2"));
+		assert.strictEqual('console.log(1+2);', printExpression(lang.output,printExpression(lang.output,"1+2")));
+
 	  });
 	  
 	  test('TypeScript', () => {
 		const lang: Language | null = parseLanguage("typescript");
 		assert.ok(lang);
-		assert.strictEqual("ts-node", lang.command);
+		assert.strictEqual("ts-node", lang.executable);
 		assert.strictEqual("ts", lang.extension);
 		assert.strictEqual("//", lang.comment);
-		assert.strictEqual('console.log(1+2);', lang.logCommand("1+2"));
+		assert.strictEqual('console.log(1+2);', printExpression(lang.output,"1+2"));
+		assert.strictEqual('console.log(1+2);', printExpression(lang.output,printExpression(lang.output,"1+2")));
 	  });
 	  
 	  test('Ruby', () => {
 		const lang: Language | null = parseLanguage("ruby");
 		assert.ok(lang);
-		assert.strictEqual("ruby", lang.command);
+		assert.strictEqual("ruby", lang.executable);
 		assert.strictEqual("rb", lang.extension);
 		assert.strictEqual("#", lang.comment);
-		assert.strictEqual('puts(1+2);', lang.logCommand("1+2"));
+		assert.strictEqual('puts(1+2);', printExpression(lang.output,"1+2"));
+		assert.strictEqual('puts(1+2);', printExpression(lang.output,printExpression(lang.output,"1+2")));
 	  });
 	  
 	  test('Java', () => {
 		const lang: Language | null = parseLanguage("java");
 		assert.ok(lang);
-		assert.strictEqual("jshell -s", lang.command);
+		assert.strictEqual("jshell -s", lang.executable);
 		assert.strictEqual("java", lang.extension);
 		assert.strictEqual("//", lang.comment);
-		assert.strictEqual('System.out.println(1+2);\n/exit\n', lang.logCommand("1+2"));
+		assert.strictEqual("/exit", lang.exit);
+		assert.strictEqual('System.out.println(1+2);', printExpression(lang.output,"1+2"));
+		assert.strictEqual('System.out.println(1+2);', printExpression(lang.output,printExpression(lang.output,"1+2")));
 	  });
 	  
 	  test('Kotlin', () => {
 		const lang: Language | null = parseLanguage("kotlin");
 		assert.ok(lang);
-		assert.strictEqual("kotlin", lang.command);
+		assert.strictEqual("kotlin", lang.executable);
 		assert.strictEqual("kts", lang.extension);
 		assert.strictEqual("//", lang.comment);
-		assert.strictEqual('println(1+2);', lang.logCommand("1+2"));
+		assert.strictEqual('println(1+2);', printExpression(lang.output,"1+2"));
+		assert.strictEqual('println(1+2);', printExpression(lang.output,printExpression(lang.output,"1+2")));
 	  });
 	  
 	  test('PHP', () => {
 		const lang: Language | null = parseLanguage("php");
 		assert.ok(lang);
-		assert.strictEqual("php -f", lang.command);
+		assert.strictEqual("php -f", lang.executable);
 		assert.strictEqual("php", lang.extension);
 		assert.strictEqual("//", lang.comment);
-		assert.strictEqual('print(1+2);', lang.logCommand("1+2"));
-		assert.strictEqual('?>', lang.append);
+		assert.strictEqual("?>", lang.exit);
+		assert.strictEqual('print(1+2);', printExpression(lang.output,"1+2"));
+		assert.strictEqual('print(1+2);', printExpression(lang.output,printExpression(lang.output,"1+2")));
 	  });
 
 	  test('Unsupported', () => {

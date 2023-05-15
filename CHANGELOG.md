@@ -5,15 +5,19 @@
 Barely works, not much error handling.
 
 
-## [0.0.8] - 2023-05-13 
+## [0.0.8] - 2023-05-15
 
 ### Added
 
+* support to execute selections
 * handle comment ending last line
+* show results as comment or info message (configurable via setting "resultAsComment")
+* additional languages configurable or overridable in `venkat.languages`, see readme
 
 ### Fixed
 
 * code cleanup
+* insert at end of last line of selection (not where the cursor is)
 
 ## [0.0.7] - 2023-05-13 
 
