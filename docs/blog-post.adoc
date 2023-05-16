@@ -2,25 +2,54 @@
 
 https://twitter.com/venkat_s[Venkat Subramaniam^] is a legendary speaker on the tech conference circuit whose https://www.youtube.com/results?search_query=venkat+subramaniam[presentations^] are famous for executing arbitrary code snippets and showing the results as a tooltip directly in the editor.
 This makes it really great for videos or talks as you don't need a second output terminal to run your code and you can just continue explaining what you're doing.
-The results go away afterwards so you don't need to worry about that.
+The results go away afterwards, so you don't need to worry about that.
 
 image::https://github.com/mneedham/venkat/raw/main/images/venkat-textmate.png[]
 
 He even published a https://www.agilelearner.com/presentation/5[dedicated free course^] back in 2013 explaining how he does it using the TextMate editor.
 
-In his https://youtube.com/@learndatawithmark[LearnDataWithMark videos^], Mark wanted to use a similar effect, but couldn't find a VS Code extension that did the trick.
+Mark wanted to use a similar effect in his https://youtube.com/@learndatawithmark[LearnDataWithMark videos^], so we were unsuccessfully looking for a VS Code extension that does it.
 
-So what else could we do at 10pm than *fire up ChatGPT4* to help us build one ourselves. 
+So what else could we do at 10 pm than *fire up ChatGPT4* to help us build a VS Code extension.
 Keep in mind that we've never built a VS Code extension before, nore are we that good at Typescript.
 We were following in the footsteps of Simon Willisons, https://simonwillison.net/2023/Mar/27/ai-enhanced-development/[who pointed out^] that with the assistance of GPT4, he's now able to take on and complete ambitious projects in a few hours instead of a few days.
 
-ChatGPT did a really good job, guiding us through the initial setup and putting together a minimal example for executing Python python code.
-The first version passed the code directly to the interpreter and captured the result.
+GPT-4 did an excellent job, guiding us through the initial setup of all the `package.json` and `launch.json` files and putting together a minimal example for executing selected Python code.
+Initially, just passing the code directly to the interpreter and capturing the result.
+
+[source,typescript]
+----
+import * as vscode from 'vscode';
+import { exec } from 'child_process';
+
+export function activate(context: vscode.ExtensionContext) {
+    let disposable = vscode.commands.registerCommand('extension.executePythonAndComment', async () => {
+        let editor = vscode.window.activeTextEditor;
+        if (editor) {
+            let document = editor.document;
+            let selection = editor.selection;
+            let code = document.getText(selection);
+
+            exec(`python -c "${code}"`, (error, stdout, stderr) => {
+                if (error || stderr) {
+                    console.log(`error: ${error ? error.message : stderr}`);
+                    return;
+                }
+                editor.edit(editBuilder => {
+                    let position = new vscode.Position(selection.end.line + 1, 0);
+                    editBuilder.insert(position, `# Result: ${stdout}`);
+                });
+            });
+        }
+    });
+    context.subscriptions.push(disposable);
+}
+----
 
 We evolved it to run the whole file up to the end of the current line, which made it necessary to write out the content to a file and execute that file.
 This design choice fortuitously opened up the opportunity to support different languages and not have to fiddle around with escaping symbols to avoid shell expansion.
 
-Within two hourswe had a working prototype and were happy.
+Within two hours we had a working prototype and were happy.
 
 GPT also provided us with instructions to package and publish the extension.
 Somewhat surprisingly, it also did a better job of explaining the registration and publication process than the official documentation.
@@ -29,19 +58,17 @@ The most tricky part was selecting an icon, but we think we came up with a good 
 
 image::https://github.com/mneedham/venkat/raw/main/images/venkat-marketplace.png[link=https://marketplace.visualstudio.com/items?itemName=MarkNeedham.venkat,alt="Emoji with mustache and glasses, Install Venkat from the VS Code marketplace",target="_blank"]
 
-Now you can install https://marketplace.visualstudio.com/items?itemName=MarkNeedham.venkat[Venkat from the VS Code marketplace^]. 
+Now you can install https://marketplace.visualstudio.com/items?itemName=MarkNeedham.venkat[Venkat from the VS Code Marketplace^]. 
 
-TODO proper example video
 image::https://github.com/mneedham/venkat/raw/main/images/venkat-demo.gif[]
 
-This was fun, so we continued to add a few more features - of course GPT-4 helped us with all the steps, because what do we know :)
+This was fun, so we continued to add a few more features - of course, GPT-4 helped us with all the steps because what do we know :)
 
-* execute selection or code up to current line
-* Language support for python, javascript, typescript, php, ruby, java, kotlin
-* supports multiline outputs
-* insert result as comment or show as info message (configurable)
-* selects inserted result, so can be deleted or copied with a single keystroke
-* configurable extra languages
+* executing selection or code up to the current line
+* Language support for Python, Javascript, Typescript, PHP, Ruby, Java, Kotlin
+* supporting multiline outputs
+* inserting result as a comment or showing as info message (configurable)
+* selecting the inserted result so it can be deleted or copied with a single keystroke
+* configuring extra languages
 
-We'd love for you all to try Venkat out, https://github.com/mneedham/venkat/issues[give us feedback^] or https://github.com/mneedham/venkat[contribute to the project^] (e.g. by adding extra languages or features)
-
+We'd love for you all to try Venkat out, https://github.com/mneedham/venkat/issues[give us feedback^] or https://github.com/mneedham/venkat[contribute to the project^] (e.g., by adding extra languages or features)
